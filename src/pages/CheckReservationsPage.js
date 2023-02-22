@@ -21,7 +21,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 export default function CheckReservationsPage() {
     const navigate = useNavigate();
     function UpdateStatus(id, status) {
-    
+
         const update = async () => {
             await axios
                 .post("http://localhost:3000/updateStatus",
@@ -37,9 +37,11 @@ export default function CheckReservationsPage() {
                 .catch(err => {
                     console.log(err)
                 })
-                navigate(0)
-            }
-            
+
+            navigate(0)
+
+        }
+
         update()
     }
 
@@ -83,12 +85,12 @@ export default function CheckReservationsPage() {
                     </div>
                 ) : (
                     <text>
-    
+
                     </text>
-    
+
                 )
             ),
-    
+
         },
         {
             Header: 'Confirm',
@@ -101,15 +103,15 @@ export default function CheckReservationsPage() {
                     </div>
                 ) : (
                     <text>
-    
+
                     </text>
-    
+
                 )
             ),
-    
+
         },
-    
-    
+
+
     ];
 
     const [data, setData] = useState([]);
@@ -117,9 +119,9 @@ export default function CheckReservationsPage() {
 
     const [userName, setUserName] = useState()
     const [mobile, setMobile] = useState()
-    const [reserve_date, setReserve_date] = useState(dayjs(new Date()).format('YYYY/MM/DD'))
-    
-    
+    const [reserve_date, setReserve_date] = useState(); //useState(dayjs(new Date()).format('YYYY/MM/DD'))
+
+
     const [value, setValue] = React.useState('/checkReservations');
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -131,50 +133,55 @@ export default function CheckReservationsPage() {
     }
 
     const handleSearch = async (e) => {
-        const isEmployee = localStorage.getItem("isEmployee") ==='employee';
+        const isEmployee = localStorage.getItem("isEmployee") === 'employee';
         // Prevent the default submit and page reload
         e.preventDefault()
 
         // Handle validations
 
         const params = new URLSearchParams([]);
-        if(!isEmployee) {
-            params.append({userId: localStorage.getItem("userId")});
+        if (!isEmployee) {
+            params.append("userId", localStorage.getItem("userId"));
         }
-        // if(userName) {
-        //     params.append({userName: userName});
-        // }
-        // if(mobile) {
-        //     params.append({mobile: mobile});
-        // }
-        // if(reserve_date) {
-        //     params.append({reserve_date: reserve_date});
-        // }
+        if (userName && userName.trim().length) {
+            params.append("userName", userName);
+        }
+        if (mobile && mobile.trim().length) {
+            params.append("mobile", mobile);
+        }
+        if (reserve_date && reserve_date.trim().length) {
+            params.append("reserve_date", reserve_date);
+        }
 
         await axios
-            .get("http://localhost:3000/getReservations", params)
+            .get("http://localhost:3000/getReservations", { params })
             .then(response => {
                 console.log(response)
                 //handleShow()
                 // Handle response
+                setData(response.data)
             })
             .catch(err => {
                 console.log(err)
             })
-        navigate(0)
+        // navigate(0)
 
     }
 
     useEffect(() => {
         const fetchData = async () => {
-            const isEmployee = localStorage.getItem("isEmployee") ==='employee';
+            const isEmployee = localStorage.getItem("isEmployee") === 'employee';
             const params = new URLSearchParams([]);
-            if(!isEmployee) {
+            if (!isEmployee) {
                 params.append("userId", localStorage.getItem("userId"));
             }
 
+            const token = localStorage.getItem("token");
+
+            setAuthToken(token)
+
             await axios
-                .get("http://localhost:3000/getReservations", { params})
+                .get("http://localhost:3000/getReservations", { params })
                 .then(response => {
                     setData(response.data)
                 })
@@ -185,9 +192,9 @@ export default function CheckReservationsPage() {
         fetchData();
     }, []);
 
-    const isEmployee = localStorage.getItem("isEmployee") ==='employee';
-    const initialState = isEmployee ? {   hiddenColumns: ['id',]} : {   hiddenColumns: ['id', 'Confirm']} ;
-    
+    const isEmployee = localStorage.getItem("isEmployee") === 'employee';
+    const initialState = isEmployee ? { hiddenColumns: ['id',] } : { hiddenColumns: ['id', 'Confirm'] };
+
 
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
         useTable({ columns, data, initialState });
@@ -196,61 +203,61 @@ export default function CheckReservationsPage() {
     return (
         <Box sx={{ width: '100%' }}>
             <Stack direction="row" spacing={2}>
-            <Tabs
-                value={value}
-                onChange={handleChange}
-                textColor="secondary"
-                indicatorColor="secondary"
-                aria-label="secondary tabs example"
-            >
-                <Tab value="/reserveTable" label="Reserve Table" />
-                <Tab value="/checkReservations" label="Check Reservations" />
-            </Tabs>
-            <Button variant="contained" onClick={logOff}>Logoff</Button>
+                <Tabs
+                    value={value}
+                    onChange={handleChange}
+                    textColor="secondary"
+                    indicatorColor="secondary"
+                    aria-label="secondary tabs example"
+                >
+                    <Tab value="/reserveTable" label="Reserve Table" />
+                    <Tab value="/checkReservations" label="Check Reservations" />
+                </Tabs>
+                <Button variant="contained" onClick={logOff}>Logoff</Button>
             </Stack>
             <div className="container">
-                {/* {isEmployee && (
+                {isEmployee && (
                     <div>
-                    <form action="" id="reverseTable" >
-                        <p className="item">
-                            <label for="userName"> User Name </label>
-                            <input
-                                type="userName"
-                                name="userName"
-                                id="userName"
-                                value={userName}
-                                onChange={e => setUserName(e.target.value)}
-                            />
-                        </p>
-                        <p className="item">
-                            <label for="mobile"> Mobile Phone Number</label>
-                            <input
-                                type="mobile"
-                                name="mobile"
-                                id="mobile"
-                                value={mobile}
-                                onChange={e => setMobile(e.target.value)}
-                            />
-                        </p>
-                        <p className="item">
-                            <label for="reserve_date_time"> Reserve Date</label>
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DatePicker
-                                    views={['day']}
-                                    label="Just date"
-                                    value={reserve_date}
-                                    inputFormat="YYYY/MM/DD"
-                                    onChange={(newValue) => {
-                                        setReserve_date(dayjs(newValue).format('YYYY/MM/DD'));
-                                    }}
-                                    renderInput={(params) => <TextField {...params} helperText={null} />}
+                        <form action="" id="reverseTable" >
+                            <p className="item">
+                                <label for="userName"> User Name </label>
+                                <input
+                                    type="userName"
+                                    name="userName"
+                                    id="userName"
+                                    value={userName}
+                                    onChange={e => setUserName(e.target.value)}
                                 />
-                            </LocalizationProvider>
-                        </p>
-                    </form>
-                    <input type="button" value="Search" onClick={handleSearch}/>
+                            </p>
+                            <p className="item">
+                                <label for="mobile"> Mobile Phone Number</label>
+                                <input
+                                    type="mobile"
+                                    name="mobile"
+                                    id="mobile"
+                                    value={mobile}
+                                    onChange={e => setMobile(e.target.value)}
+                                />
+                            </p>
+                            <p className="item">
+                                <label for="reserve_date_time"> Reserve Date</label>
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <DatePicker
+                                        views={['day']}
+                                        label="Just date"
+                                        value={reserve_date}
+                                        inputFormat="YYYY/MM/DD"
+                                        onChange={(newValue) => {
+                                            setReserve_date(dayjs(newValue).format('YYYY/MM/DD'));
+                                        }}
+                                        renderInput={(params) => <TextField {...params} helperText={null} />}
+                                    />
+                                </LocalizationProvider>
+                            </p>
+                        </form>
+                        <input type="button" value="Search" onClick={handleSearch} />
                     </div>
-                )} */}
+                )}
                 <table {...getTableProps()}>
                     <thead>
                         {headerGroups.map((headerGroup) => (
