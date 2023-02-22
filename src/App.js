@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react"
+import { Route, Routes } from "react-router-dom"
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
+import { useNavigate } from "react-router-dom"
 
-function App() {
+// We will create these two pages in a moment
+import CheckReservationsPage from "./pages/CheckReservationsPage"
+import LoginPage from './pages/LoginPage'
+import ReserveTablePage from "./pages/ReserveTablePage";
+
+
+export default function App() {
+  const navigate = useNavigate();
+  const [value, setValue] = React.useState('login');
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+    testFlg = true
+    navigate(newValue);
+  };
+
+  let testFlg = false;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+    <Routes>
+      <Route path='/' element={<LoginPage />} />
+      <Route path='/reserveTable' element={<ReserveTablePage />} />
+      <Route path='/checkReservations' element={<CheckReservationsPage />} />
+    </Routes>
 
-export default App;
+
+  )
+}
