@@ -31,18 +31,19 @@ export default function CheckReservationsPage() {
                     })
                 .then(response => {
                     console.log(response)
-                    //handleShow()
                     // Handle response
+                    fetchData();
                 })
                 .catch(err => {
                     console.log(err)
                 })
 
-            navigate(0)
+                
 
         }
 
         update()
+        
     }
 
     const TABLE_COLUMNS = [
@@ -119,6 +120,7 @@ export default function CheckReservationsPage() {
 
     const [userName, setUserName] = useState()
     const [mobile, setMobile] = useState()
+    const [status, setStatus] = useState()
     const [reserve_date, setReserve_date] = useState(); //useState(dayjs(new Date()).format('YYYY/MM/DD'))
 
 
@@ -149,6 +151,9 @@ export default function CheckReservationsPage() {
         if (mobile && mobile.trim().length) {
             params.append("mobile", mobile);
         }
+        if (status && status.trim().length) {
+            params.append("status", status);
+        }
         if (reserve_date && reserve_date.trim().length) {
             params.append("reserve_date", reserve_date);
         }
@@ -168,27 +173,41 @@ export default function CheckReservationsPage() {
 
     }
 
+    const fetchData = async () => {
+        const isEmployee = localStorage.getItem("isEmployee") === 'employee';
+        const params = new URLSearchParams([]);
+        
+        if (!isEmployee) {
+            params.append("userId", localStorage.getItem("userId"));
+        }
+        if (userName && userName.trim().length) {
+            params.append("userName", userName);
+        }
+        if (mobile && mobile.trim().length) {
+            params.append("mobile", mobile);
+        }
+        if (status && status.trim().length) {
+            params.append("status", status);
+        }
+        if (reserve_date && reserve_date.trim().length) {
+            params.append("reserve_date", reserve_date);
+        }
+
+        const token = localStorage.getItem("token");
+
+        setAuthToken(token)
+
+        await axios
+            .get("http://localhost:3000/getReservations", { params })
+            .then(response => {
+                setData(response.data)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            const isEmployee = localStorage.getItem("isEmployee") === 'employee';
-            const params = new URLSearchParams([]);
-            if (!isEmployee) {
-                params.append("userId", localStorage.getItem("userId"));
-            }
-
-            const token = localStorage.getItem("token");
-
-            setAuthToken(token)
-
-            await axios
-                .get("http://localhost:3000/getReservations", { params })
-                .then(response => {
-                    setData(response.data)
-                })
-                .catch(err => {
-                    console.log(err)
-                })
-        };
         fetchData();
     }, []);
 
@@ -238,6 +257,16 @@ export default function CheckReservationsPage() {
                                     value={mobile}
                                     onChange={e => setMobile(e.target.value)}
                                 />
+                            </p>
+                            <p className="item">
+                                <label for="status">Status</label>
+                                <select name="status" id="status" value={status} onChange={e => setStatus(e.target.value)}>
+                                <option value="">All</option>
+                                    <option value="booked">booked</option>
+                                    <option value="canceled">canceld</option>
+                                    <option value="confirmed">confirmed</option>
+                                </select>
+                                
                             </p>
                             <p className="item">
                                 <label for="reserve_date_time"> Reserve Date</label>
