@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo , useRef} from 'react';
 import { useTable } from 'react-table';
 //import { TABLE_COLUMNS } from './table_column';
 import axios from "axios"
@@ -37,9 +37,6 @@ export default function CheckReservationsPage() {
                 .catch(err => {
                     console.log(err)
                 })
-
-                
-
         }
 
         update()
@@ -118,9 +115,9 @@ export default function CheckReservationsPage() {
     const [data, setData] = useState([]);
     const columns = useMemo(() => TABLE_COLUMNS, []);
 
-    const [userName, setUserName] = useState()
-    const [mobile, setMobile] = useState()
-    const [status, setStatus] = useState()
+    const [userName, setUserName] = useState('')
+    const [mobile, setMobile] = useState('')
+    const [status, setStatus] = useState('')
     const [reserve_date, setReserve_date] = useState(); //useState(dayjs(new Date()).format('YYYY/MM/DD'))
 
 
@@ -146,15 +143,19 @@ export default function CheckReservationsPage() {
             params.append("userId", localStorage.getItem("userId"));
         }
         if (userName && userName.trim().length) {
+            localStorage.setItem("userNameSearch", userName)
             params.append("userName", userName);
         }
         if (mobile && mobile.trim().length) {
+            localStorage.setItem("mobileSearch", mobile)
             params.append("mobile", mobile);
         }
         if (status && status.trim().length) {
+            localStorage.setItem("statusSearch", status)
             params.append("status", status);
         }
         if (reserve_date && reserve_date.trim().length) {
+            localStorage.setItem("dateSearch", reserve_date)
             params.append("reserve_date", reserve_date);
         }
 
@@ -180,17 +181,21 @@ export default function CheckReservationsPage() {
         if (!isEmployee) {
             params.append("userId", localStorage.getItem("userId"));
         }
-        if (userName && userName.trim().length) {
-            params.append("userName", userName);
+        let userNameStr = localStorage.getItem("userNameSearch")
+        if (userNameStr && userNameStr.trim().length) {
+            params.append("userName", userNameStr);
         }
-        if (mobile && mobile.trim().length) {
-            params.append("mobile", mobile);
+        let mobileStr = localStorage.getItem("mobileSearch")
+        if (mobileStr && mobileStr.trim().length) {
+            params.append("mobile", mobileStr);
         }
-        if (status && status.trim().length) {
-            params.append("status", status);
+        let statusStr = localStorage.getItem("statusSearch")
+        if (statusStr && statusStr.trim().length) {
+            params.append("status", statusStr);
         }
-        if (reserve_date && reserve_date.trim().length) {
-            params.append("reserve_date", reserve_date);
+        let dateStr = localStorage.getItem("dateSearch")
+        if (dateStr && dateStr.trim().length) {
+            params.append("reserve_date", dateStr);
         }
 
         const token = localStorage.getItem("token");
@@ -208,6 +213,10 @@ export default function CheckReservationsPage() {
     };
 
     useEffect(() => {
+        localStorage.setItem("userNameSearch", "")
+        localStorage.setItem("mobileSearch", "")
+        localStorage.setItem("statusSearch", "")
+        localStorage.setItem("dateSearch", "")
         fetchData();
     }, []);
 
