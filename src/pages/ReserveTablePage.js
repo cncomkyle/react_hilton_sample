@@ -36,9 +36,11 @@ export default function ReserveTablePage() {
     const [value, setValue] = React.useState(dayjs(new Date()));
 
     const [show, setShow] = useState(false);
+    const [warnMsg, setWarnMsg] = useState();
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
 
     const handleSubmit = async (e) => {
         // Prevent the default submit and page reload
@@ -56,13 +58,18 @@ export default function ReserveTablePage() {
                 })
             .then(response => {
                 console.log(response)
-                //handleShow()
                 // Handle response
+                if(response.data.status == 200) {
+                    navigate('/checkReservations')
+                } else {
+                    setWarnMsg(response.data.message)
+                    handleShow()
+                }
             })
             .catch(err => {
                 console.log(err)
             })
-        navigate('/checkReservations')
+        
 
     }
 
@@ -155,16 +162,14 @@ export default function ReserveTablePage() {
             </div>
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Waiting </Modal.Title>
+                    <Modal.Title>Warning </Modal.Title>
                 </Modal.Header>
-                <Modal.Body>The size table you choose is unavailable now, Do you want to wait for it ? </Modal.Body>
+                <Modal.Body>{warnMsg}</Modal.Body>
                 <Modal.Footer>
                     <Button variant="Yes" onClick={handleClose}>
-                        Yes
+                        Close
                     </Button>
-                    <Button variant="No" onClick={handleClose}>
-                        No
-                    </Button>
+                    
                 </Modal.Footer>
             </Modal>
         </Box>
