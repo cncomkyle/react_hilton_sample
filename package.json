@@ -44,5 +44,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "cucumber": "^6.0.7",
+    "selenium-webdriver": "^4.8.1",
+    "type": "module"
   }
 }

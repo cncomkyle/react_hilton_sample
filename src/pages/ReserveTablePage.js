@@ -72,12 +72,13 @@ export default function ReserveTablePage() {
         
 
     }
-
+    const isEmployee = localStorage.getItem("isEmployee") === 'employee';
     const [size, setSize] = useState('2')
     const [userName, setUserName] = useState()
     const [mobile, setMobile] = useState()
     const [reserve_date, setReserve_date] = useState(dayjs(new Date()).format('YYYY/MM/DD'))
     const [reserve_time, setReserve_time] = useState('11:30:00')
+    
 
     return (
 
@@ -92,6 +93,9 @@ export default function ReserveTablePage() {
             >
                 <Tab value="/reserveTable" label="Reserve Table" />
                 <Tab value="/checkReservations" label="Check Reservations" />
+                {isEmployee && (
+                        <Tab value="/reviewTableStatus" label="Check Table Status" />
+                    )}
             </Tabs>
             <ButtonMui variant="contained" onClick={logOff}>Logoff</ButtonMui>
             </Stack>

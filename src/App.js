@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom"
 import CheckReservationsPage from "./pages/CheckReservationsPage"
 import LoginPage from './pages/LoginPage'
 import ReserveTablePage from "./pages/ReserveTablePage";
-
+import ReviewTablesStatusPage from "./pages/ReviewTablesStatusPage";
 
 export default function App() {
   const navigate = useNavigate();
@@ -27,6 +27,7 @@ export default function App() {
       <Route path='/' element={<LoginPage />} />
       <Route path='/reserveTable' element={<ReserveTablePage />} />
       <Route path='/checkReservations' element={<CheckReservationsPage />} />
+      <Route path='/reviewTableStatus' element={<ReviewTablesStatusPage />} />
     </Routes>
 
 

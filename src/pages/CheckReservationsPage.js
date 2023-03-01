@@ -1,6 +1,6 @@
 import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useState, useEffect, useMemo , useRef} from 'react';
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useMemo } from 'react';
 import { useTable } from 'react-table';
 //import { TABLE_COLUMNS } from './table_column';
 import axios from "axios"
@@ -240,6 +240,9 @@ export default function CheckReservationsPage() {
                 >
                     <Tab value="/reserveTable" label="Reserve Table" />
                     <Tab value="/checkReservations" label="Check Reservations" />
+                    {isEmployee && (
+                        <Tab value="/reviewTableStatus" label="Check Table Status" />
+                    )}
                 </Tabs>
                 <Button variant="contained" onClick={logOff}>Logoff</Button>
             </Stack>
@@ -247,6 +250,9 @@ export default function CheckReservationsPage() {
                 {isEmployee && (
                     <div>
                         <form action="" id="reverseTable" >
+                             <p className="item">
+                                &nbsp;
+                            </p>
                             <p className="item">
                                 <label for="userName"> User Name </label>
                                 <input

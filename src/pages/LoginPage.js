@@ -52,7 +52,7 @@ export default function LoginPage() {
       <form action="" id="login" method="post" onSubmit={handleSubmit}>
         <h1>Login</h1>
         <p className="item">
-          <label for="userName"> User Name </label>
+          <label> User Name </label>
           <input
             type="userName"
             name="userName"
@@ -62,7 +62,7 @@ export default function LoginPage() {
           />
         </p>
         <p className="item">
-          <label for="password"> Password </label>
+          <label> Password </label>
           <input
             type="password"
             name="password"
